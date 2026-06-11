@@ -1,0 +1,15 @@
+# inventory.yml
+all:
+  children:
+    windows_clients:
+      hosts:
+        CYPO002:
+          ansible_host: 10.0.10.111
+        CYPO001:
+          ansible_host: 10.0.10.110
+      vars:
+        ansible_user: laurent
+        ansible_password: "{{ vault_win_password }}"
+        ansible_connection: winrm
+        ansible_winrm_transport: basic
+        ansible_port: 5985

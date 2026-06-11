@@ -1,0 +1,204 @@
+# wireguard_deploy.yml
+- name: Déploiement WireGuard complet
+  hosts: windows_clients
+  gather_facts: false
+
+  vars:
+    opnsense_host: "https://10.10.0.1"
+    opnsense_api_key: "{{ vault_opnsense_api_key }}"
+    opnsense_api_secret: "{{ vault_opnsense_api_secret }}"
+    wg_instance_uuid: "3bd86c39-1dc6-4f59-8f67-13b5fbafe09f"
+    wg_server_public_key: "tLgVZLSj77RO+C5FyDN6PIr+LLZLxFnHU2e4QC90tkY="
+    wg_server_endpoint: "82.67.89.83"
+    wg_server_port: 51822
+    wg_config_path: "C:\\Program Files\\WireGuard\\Data\\Configurations"
+    wg_tunnel_name: "wg-cuser"
+    wg_dns: "10.0.40.2"
+    wg_allowed_ips: "0.0.0.0/0"
+
+  tasks:
+
+    # -------------------------
+    # 1. GESTION DES CLÉS
+    # -------------------------
+
+    - name: Créer le dossier de configuration
+      win_file:
+        path: "{{ wg_config_path }}"
+        state: directory
+
+    - name: Vérifier si une clé privée existe déjà sur le PC
+      win_stat:
+        path: "{{ wg_config_path }}\\privatekey"
+      register: existing_key
+
+    - name: Générer la clé privée si absente
+      command: wg genkey
+      register: wg_private_key_new
+      delegate_to: localhost
+      when: not existing_key.stat.exists
+
+    - name: Sauvegarder la clé privée sur le PC
+      win_copy:
+        content: "{{ wg_private_key_new.stdout }}"
+        dest: "{{ wg_config_path }}\\privatekey"
+      when: not existing_key.stat.exists
+
+    - name: Lire la clé privée existante
+      win_shell: Get-Content "{{ wg_config_path }}\\privatekey"
+      register: wg_private_key_existing
+      when: existing_key.stat.exists
+
+    - name: Définir la clé privée active
+      set_fact:
+        wg_private_key: >-
+          {{ wg_private_key_new.stdout if not existing_key.stat.exists
+             else wg_private_key_existing.stdout | trim }}
+
+    - name: Dériver la clé publique
+      shell: "echo '{{ wg_private_key }}' | wg pubkey"
+      register: wg_public_key
+      delegate_to: localhost
+
+    # -------------------------
+    # 2. RÉCUPÉRER LA CONFIG DE L'INSTANCE
+    # -------------------------
+
+    - name: Récupérer la config actuelle de l'instance
+      uri:
+        url: "{{ opnsense_host }}/api/wireguard/server/getServer/{{ wg_instance_uuid }}"
+        method: GET
+        user: "{{ opnsense_api_key }}"
+        password: "{{ opnsense_api_secret }}"
+        force_basic_auth: true
+        validate_certs: false
+      register: current_instance
+      delegate_to: localhost
+
+    - name: Extraire les UUIDs existants et vérifier si le peer existe
+      set_fact:
+        existing_peer_uuids: >-
+          {{ current_instance.json.server.peers
+             | dict2items
+             | selectattr('value.selected', 'equalto', 1)
+             | map(attribute='key')
+             | list }}
+        peer_already_exists: >-
+          {{ inventory_hostname in
+             (current_instance.json.server.peers
+              | dict2items
+              | map(attribute='value.value')
+              | list) }}
+      delegate_to: localhost
+
+    - name: Afficher statut du peer
+      debug:
+        msg: "Peer {{ inventory_hostname }} existe déjà dans OPNsense : {{ peer_already_exists }}"
+
+    # -------------------------
+    # 3. CRÉER LE PEER SI ABSENT
+    # -------------------------
+
+    - name: Créer le peer sur OPNsense si absent
+      uri:
+        url: "{{ opnsense_host }}/api/wireguard/client/addClient"
+        method: POST
+        user: "{{ opnsense_api_key }}"
+        password: "{{ opnsense_api_secret }}"
+        force_basic_auth: true
+        validate_certs: false
+        body_format: json
+        body:
+          client:
+            enabled: "1"
+            name: "{{ inventory_hostname }}"
+            pubkey: "{{ wg_public_key.stdout }}"
+            tunneladdress: "{{ wg_client_ip }}/32"
+            serveraddress: ""
+            serverport: ""
+            endpoint: ""
+            keepalive: "25"
+      register: new_peer
+      delegate_to: localhost
+      when: not peer_already_exists
+
+    - name: Lier le peer à l'instance en conservant les existants
+      uri:
+        url: "{{ opnsense_host }}/api/wireguard/server/setServer/{{ wg_instance_uuid }}"
+        method: POST
+        user: "{{ opnsense_api_key }}"
+        password: "{{ opnsense_api_secret }}"
+        force_basic_auth: true
+        validate_certs: false
+        body_format: json
+        body:
+          server:
+            peers: "{{ (existing_peer_uuids + [new_peer.json.uuid]) | join(',') }}"
+      delegate_to: localhost
+      when: not peer_already_exists
+
+    - name: Appliquer la configuration sur OPNsense
+      uri:
+        url: "{{ opnsense_host }}/api/wireguard/service/reconfigure"
+        method: POST
+        user: "{{ opnsense_api_key }}"
+        password: "{{ opnsense_api_secret }}"
+        force_basic_auth: true
+        validate_certs: false
+        body_format: json
+        body: {}
+      delegate_to: localhost
+
+    # -------------------------
+    # 4. INSTALLATION WIREGUARD WINDOWS
+    # -------------------------
+
+    - name: Créer le dossier Temp
+      win_file:
+        path: "C:\\Temp"
+        state: directory
+
+    - name: Télécharger WireGuard
+      win_get_url:
+        url: "https://download.wireguard.com/windows-client/wireguard-installer.exe"
+        dest: "C:\\Temp\\wireguard-installer.exe"
+
+    - name: Installer WireGuard silencieusement
+      win_command: '"C:\Temp\wireguard-installer.exe" /S'
+      register: install_result
+      ignore_errors: true
+
+    # -------------------------
+    # 5. DÉPLOIEMENT CONFIG ET TUNNEL
+    # -------------------------
+
+    - name: Arrêter le tunnel WireGuard existant
+      win_shell: |
+        & "C:\Program Files\WireGuard\wireguard.exe" /uninstalltunnelservice {{ wg_tunnel_name }}
+        Start-Sleep -Seconds 3
+        Stop-Service -Name "WireGuardManager" -Force -ErrorAction SilentlyContinue
+        Start-Sleep -Seconds 2
+      ignore_errors: true
+
+    - name: Déployer la configuration du tunnel
+      win_template:
+        src: templates/wg-cuser.conf.j2
+        dest: "{{ wg_config_path }}\\{{ wg_tunnel_name }}.conf"
+      vars:
+        client_private_key: "{{ wg_private_key }}"
+
+    - name: Redémarrer WireGuard Manager
+      win_service:
+        name: WireGuardManager
+        state: started
+
+    - name: Activer le tunnel WireGuard
+      win_shell: |
+        Start-Sleep -Seconds 2
+        $dpapi = "{{ wg_config_path }}\{{ wg_tunnel_name }}.conf.dpapi"
+        $conf  = "{{ wg_config_path }}\{{ wg_tunnel_name }}.conf"
+        if (Test-Path $dpapi) {
+          & "C:\Program Files\WireGuard\wireguard.exe" /installtunnelservice $dpapi
+        } elseif (Test-Path $conf) {
+          & "C:\Program Files\WireGuard\wireguard.exe" /installtunnelservice $conf
+        }

@@ -1,0 +1,11 @@
+---
+- name: Déploiement Wazuh Agent - Windows
+  hosts: windows
+  roles:
+    - role: wazuh-agent
+      vars:
+        wazuh_managers:
+          - address: "{{ wazuh_manager_address }}"
+            port: "{{ wazuh_manager_port }}"
+            protocol: "{{ wazuh_manager_protocol }}"
+        wazuh_agent_version: "{{ wazuh_agent_version }}"

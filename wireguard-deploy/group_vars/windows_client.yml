@@ -1,0 +1,11 @@
+# group_vars/windows_clients.yml
+# group_vars/windows_clients.yml
+wg_instance_name: "wg-cuser"
+wg_instance_uuid: "3bd86c39-1dc6-4f59-8f67-13b5fbafe09f"
+wg_server_public_key: "tLgVZLSj77RO+C5FyDN6PIr+LLZLxFnHU2e4QC90tkY="
+wg_server_endpoint: "82.67.89.83"
+wg_server_port: 51822
+wg_allowed_ips: "0.0.0.0/0,::/0"
+wg_dns: "10.0.40.2,8.8.8.8"
+wg_config_path: "C:\\Program Files\\WireGuard\\Data\\Configurations"
+opnsense_host: "https://10.10.0.1"

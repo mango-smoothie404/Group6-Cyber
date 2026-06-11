@@ -1,0 +1,4 @@
+wazuh_manager_address: "10.0.40.3"   # ← Remplacez par l'IP de votre Wazuh Manager
+wazuh_manager_port: "1514"
+wazuh_manager_protocol: "tcp"
+wazuh_agent_version: "4.14.5-1"            # ← Adaptez à votre version
