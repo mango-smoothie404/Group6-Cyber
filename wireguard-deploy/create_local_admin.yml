@@ -1,0 +1,13 @@
+- name: Créer administrateur local
+  hosts: windows_clients
+  gather_facts: false
+
+  tasks:
+    - name: Créer l'utilisateur local Administrateur
+      win_user:
+        name: Administrateur
+        password: "{{ vault_local_admin_password }}"
+        state: present
+        password_never_expires: true
+        user_cannot_change_password: true
+        description: "Compte administrateur local"
