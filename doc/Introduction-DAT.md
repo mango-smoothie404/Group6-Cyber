@@ -75,9 +75,9 @@ OPNsense : firewall principal de l’infrastructure, gestion des flux réseau et
 
 VM Bastion / Reverse Proxy (Debian) : machine utilisée pour sécuriser les accès administrateurs et héberger les services d’accès (Authelia, proxy).
 
-Authelia (sur Debian) : service d’authentification permettant de contrôler l’accès aux applications internes après connexion VPN.
+Authelia (sur Debian) : service d’authentification permettant de contrôler l’accès aux applications internes après connexion 
 
-Samba Active Directory : contrôleur de domaine permettant la gestion des utilisateurs, des postes et des politiques de groupe (GPO).
+Active Directory : contrôleur de domaine permettant la gestion des utilisateurs, des postes et des politiques de groupe (GPO).
 
 TrueNAS (NAS) : serveur de stockage centralisé contenant les données utilisateurs, les profils itinérants et les partages réseau.
 
