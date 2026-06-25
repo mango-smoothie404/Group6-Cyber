@@ -1,0 +1,295 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.board{display:flex;gap:14px;padding:1rem 0;overflow-x:auto;align-items:flex-start}
+.col{min-width:215px;flex:1;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:12px}
+.col-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.col-title{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.col-count{font-size:11px;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:99px;padding:1px 7px;color:var(--color-text-secondary)}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:8px}
+.card:hover{border-color:var(--color-border-secondary)}
+.card-title{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px;line-height:1.4}
+.card-meta{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.tag{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:500}
+.tag-infra{background:#E6F1FB;color:#0C447C}
+.tag-secu{background:#FCEBEB;color:#A32D2D}
+.tag-iac{background:#EAF3DE;color:#27500A}
+.tag-siem{background:#FAEEDA;color:#633806}
+.tag-doc{background:#EEEDFE;color:#3C3489}
+.tag-docker{background:#E1F5EE;color:#085041}
+.avatar{font-size:10px;font-weight:500;padding:2px 7px;border-radius:99px;white-space:nowrap}
+.av-laurent{background:#EEEDFE;color:#3C3489}
+.av-eva{background:#FAECE7;color:#993C1D}
+.av-ilyas{background:#E1F5EE;color:#085041}
+.av-ziyad{background:#FAEEDA;color:#633806}
+.av-all{background:#F1EFE8;color:#444441}
+.prio-crit{font-size:10px;color:#A32D2D;font-weight:500}
+.prio-high{font-size:10px;color:#BA7517;font-weight:500}
+.prio-med{font-size:10px;color:var(--color-text-secondary)}
+</style>
+
+<h2 class="sr-only">Tableau Kanban projet CYNA avec attribution par membre de l'équipe</h2>
+
+<div class="board">
+
+<div class="col">
+  <div class="col-header">
+    <div class="dot" style="background:#E24B4A"></div>
+    <span class="col-title">À faire</span>
+    <span class="col-count">7</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Insérer captures dashboards Wazuh (alertes temps réel)</div>
+    <div class="card-meta">
+      <span class="tag tag-siem">SIEM</span>
+      <span class="avatar av-eva">Eva</span>
+      <span class="prio-crit">⚠ Critique</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Insérer sorties nmap annotées dans §5.2</div>
+    <div class="card-meta">
+      <span class="tag tag-secu">Sécurité</span>
+      <span class="avatar av-eva">Eva</span>
+      <span class="avatar av-laurent">Laurent</span>
+      <span class="prio-crit">⚠ Critique</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Insérer captures OWASP ZAP dans §5.2</div>
+    <div class="card-meta">
+      <span class="tag tag-secu">Sécurité</span>
+      <span class="avatar av-eva">Eva</span>
+      <span class="avatar av-laurent">Laurent</span>
+      <span class="prio-crit">⚠ Critique</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Compléter tableau mesures sécurité §4.4 (colonne Statut vide)</div>
+    <div class="card-meta">
+      <span class="tag tag-secu">Sécurité</span>
+      <span class="avatar av-eva">Eva</span>
+      <span class="prio-high">↑ Haute</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Renseigner commit GIT pour anomalie SEC001 (port 22 DMZ)</div>
+    <div class="card-meta">
+      <span class="tag tag-iac">IaC / GIT</span>
+      <span class="avatar av-laurent">Laurent</span>
+      <span class="prio-high">↑ Haute</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Exporter rapport SCA Wazuh (score ≥ 70%) et insérer §4.3</div>
+    <div class="card-meta">
+      <span class="tag tag-siem">SIEM</span>
+      <span class="avatar av-eva">Eva</span>
+      <span class="prio-high">↑ Haute</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Remplir checklist Annexe A (toutes cases ☐ à cocher)</div>
+    <div class="card-meta">
+      <span class="tag tag-doc">Doc</span>
+      <span class="avatar av-all">Tous</span>
+      <span class="prio-high">↑ Haute</span>
+    </div>
+  </div>
+</div>
+
+<div class="col">
+  <div class="col-header">
+    <div class="dot" style="background:#EF9F27"></div>
+    <span class="col-title">En cours</span>
+    <span class="col-count">6</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Compléter §4.6 — liste applications protégées Authelia (tableau incomplet)</div>
+    <div class="card-meta">
+      <span class="tag tag-secu">Sécurité</span>
+      <span class="avatar av-laurent">Laurent</span>
+      <span class="prio-high">↑ Haute</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Tester terraform plan sur Proxmox (init + plan sans erreur)</div>
+    <div class="card-meta">
+      <span class="tag tag-iac">IaC</span>
+      <span class="avatar av-ilyas">Ilyas</span>
+      <span class="prio-high">↑ Haute</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Valider tous les agents Wazuh "Active" (AD, Authelia, Bastion, endpoints)</div>
+    <div class="card-meta">
+      <span class="tag tag-siem">SIEM</span>
+      <span class="avatar av-eva">Eva</span>
+      <span class="avatar av-laurent">Laurent</span>
+      <span class="prio-high">↑ Haute</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Vérifier URLs et liens GIT dans §6.1 (index documentation)</div>
+    <div class="card-meta">
+      <span class="tag tag-doc">Doc</span>
+      <span class="avatar av-all">Tous</span>
+      <span class="prio-med">— Moyenne</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Configurer alertes email / webhook Slack sur Wazuh (§6.3)</div>
+    <div class="card-meta">
+      <span class="tag tag-siem">SIEM</span>
+      <span class="avatar av-eva">Eva</span>
+      <span class="prio-med">— Moyenne</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Documenter dette technique VLAN (mono-site, switch virtuel unique)</div>
+    <div class="card-meta">
+      <span class="tag tag-infra">Infra</span>
+      <span class="avatar av-ilyas">Ilyas</span>
+      <span class="avatar av-laurent">Laurent</span>
+      <span class="prio-med">— Moyenne</span>
+    </div>
+  </div>
+</div>
+
+<div class="col">
+  <div class="col-header">
+    <div class="dot" style="background:#378ADD"></div>
+    <span class="col-title">À valider / review</span>
+    <span class="col-count">5</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Schéma réseau logique — zones, VLAN, légende lisible (§2.1)</div>
+    <div class="card-meta">
+      <span class="tag tag-infra">Infra</span>
+      <span class="avatar av-laurent">Laurent</span>
+      <span class="avatar av-ilyas">Ilyas</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Playbooks Ansible wireguard_deploy.yml + wazuh-ansible — tests déployés</div>
+    <div class="card-meta">
+      <span class="tag tag-iac">IaC</span>
+      <span class="avatar av-laurent">Laurent</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Docker Swarm — stack CYNA déployée sur Azure (services actifs)</div>
+    <div class="card-meta">
+      <span class="tag tag-docker">Docker</span>
+      <span class="avatar av-ziyad">Ziyad</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Politique de sécurité (doc/security-policy.pdf) finalisée et déposée</div>
+    <div class="card-meta">
+      <span class="tag tag-doc">Doc</span>
+      <span class="avatar av-eva">Eva</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Historique GIT — vérifier ≥ 1 commit/semaine par membre</div>
+    <div class="card-meta">
+      <span class="tag tag-iac">IaC / GIT</span>
+      <span class="avatar av-all">Tous</span>
+    </div>
+  </div>
+</div>
+
+<div class="col">
+  <div class="col-header">
+    <div class="dot" style="background:#1D9E75"></div>
+    <span class="col-title">Terminé</span>
+    <span class="col-count">8</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Architecture réseau + plan d'adressage VLAN (§2.2)</div>
+    <div class="card-meta">
+      <span class="tag tag-infra">Infra</span>
+      <span class="avatar av-laurent">Laurent</span>
+      <span class="avatar av-ilyas">Ilyas</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">OPNsense — Firewall, WireGuard, Suricata, DHCP, DNS (§2.5)</div>
+    <div class="card-meta">
+      <span class="tag tag-infra">Infra</span>
+      <span class="avatar av-laurent">Laurent</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Authelia MFA — LXC déployé + intégration LDAP Active Directory (§4.6)</div>
+    <div class="card-meta">
+      <span class="tag tag-secu">Sécurité</span>
+      <span class="avatar av-laurent">Laurent</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Active Directory + GPO + AD Connect → Entra ID (§4bis.1)</div>
+    <div class="card-meta">
+      <span class="tag tag-infra">Infra</span>
+      <span class="avatar av-eva">Eva</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">main.tf Terraform — VMs et LXC déclarés, versionné GIT (§3.1)</div>
+    <div class="card-meta">
+      <span class="tag tag-iac">IaC</span>
+      <span class="avatar av-ilyas">Ilyas</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Analyse de risques §4.2 — 6 entrées avec mitigations</div>
+    <div class="card-meta">
+      <span class="tag tag-secu">Sécurité</span>
+      <span class="avatar av-eva">Eva</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Zabbix + GLPI déployés sur Azure (§4bis.2 / §4bis.3)</div>
+    <div class="card-meta">
+      <span class="tag tag-infra">Infra</span>
+      <span class="avatar av-ilyas">Ilyas</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">FreeFileSync — sauvegarde NAS vers cloud planifiée (§4bis.4)</div>
+    <div class="card-meta">
+      <span class="tag tag-infra">Infra</span>
+      <span class="avatar av-eva">Eva</span>
+    </div>
+  </div>
+</div>
+
+</div>
